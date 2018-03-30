@@ -38,6 +38,7 @@ No arquivo _config.php_ a constante __BASE_URL__ define a url padrão do servido
 ````php
 
 <?php
+
 define("BASE_URL", "http://localhost");
 
 define("PASS_USER", "teste");
