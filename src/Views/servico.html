@@ -1,0 +1,172 @@
+{% extends "template.html" %}
+
+{% block content %}
+<div class="content box-empresa col-sm-12">
+    <div class="col-sm-12 mt-4">
+        <h4><i class="fa fa-angle-right"></i> <small> Cadastro de</small><strong class="text-uppercase"> Serviços</strong></h4>
+    </div>
+    <div class="col-md-10">
+        <div class="panel-heading">
+            <div class="page-heading text-left mb-2"> <i class="glyphicon glyphicon-plus"></i>
+                <button class="btn btn-success" data-target="#adicionarEmp" data-toggle="modal" type="button">Incluir</button>
+            </div>
+        </div> <!-- /panel-heading -->
+        <div class="panel-body">
+            <div class="remove-messages"></div>
+                <table class="table table-bordered" method="POST">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Descrição do Serviço</th>
+                            <th>Valor</th>
+                            <th>Situação</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for servicos in ser %}
+                        <tr>
+                            <td>{{servicos.id}}</td>
+                            <td>{{servicos.description}}</td>
+                            <td>{{servicos.value_service}}</td>
+                            <td>
+                                {% if servicos.situation == 0 %}
+                                    {{situation[0]}}
+                                {% else %}
+                                    <b><i>{{situation[1]}}</i></b>
+                                {% endif %}    
+                            </td>
+                            <td width="10"><a data-target="#editaServ{{servicos.id}}" data-toggle="modal" href="#">Editar</a><a data-target="#excluirServ{{servicos.id}}" data-toggle="modal" href>Excluir</a></td>
+                        </tr>
+                        <!-- /Modal de editar -->
+                        <div class="modal fade" id="editaServ{{servicos.id}}" role="dialog" aria-hidden="true" aria-labelledby="editaEmpLabel" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editaEmpLabel">Editar serviço</h5>
+                                        <button class="close" data-dismiss="modal" type="button" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form action="{{BASE_URL}}/servico/edit/{{servicos.id}}" method="post">
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label class="form-label" id="nameServ">Nome do Serviço</label>
+                                                    <input class="form-control" value="{{servicos.description}}" name="nameServ" type="text">
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label class="form-label" id="valServ">Valor do Serviço</label>
+                                                    <input class="form-control" value="{{servicos.value_service}}" name="valServ" type="text">
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label class="form-label" id="situServ">Situação</label>
+                                                    <select class="form-control" name="situacao">
+                                                        {% for key, situ in situation %}
+                                                            <option 
+                                                                {% if key == servicos.situation %} 
+                                                                    value="{{key}}" selected="selected" 
+                                                                {% else %}
+                                                                    value="{{key}}"
+                                                            {% endif %}>{{situ}}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" data-dismiss="modal" type="button">Cancelar</button>
+                                            <button class="btn btn-success" type="submit" onclick="aprovar()">Salvar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Modal de edicao -->
+                        <!-- Modal de exclusão de servico -->
+                        <div class="modal fade" id="excluirServ{{servicos.id}}" role="dialog" aria-hidden="true" aria-labelledby="excluiTranLabel" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <form action="{{BASE_URL}}/servico/delete/{{servicos.id}}">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="excluiTranLabel">Deseja excluir este serviço?</h5>
+                                            <button class="close" data-dismiss="modal" type="button" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" data-dismiss="modal" type="button">Cancelar</button>
+                                            <button class="btn btn-success" type="submit">Excluir</button>
+                                        </div>
+                                    </div>
+                                </form>	
+                            </div>
+                        </div>
+                        <!-- /Modal de Inclusão de servico -->
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <!-- Paginação -->
+                {% if paginas > 1 %}
+                <div class="col-sm-12">				
+                    <nav aria-label="...">
+                        <ul class="pagination">
+                            {% for key, btn in btnPag %}
+                                {% if key == 99999999999 %}
+                                    <li class="page-item active">
+                                        <a class="page-link" href="/servico?p={{btn}}">{{btn}} <span class="sr-only">(current)</span></a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="/servico?p={{btn}}">{{btn}}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+                <!-- Paginação -->
+            </div>
+        </div>
+    </div>
+
+<!-- /Modal de adicionar -->
+<div class="modal fade" id="adicionarEmp" role="dialog" aria-hidden="true" aria-labelledby="editaEmpLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editaEmpLabel">Adicionar</h5>
+                <button class="close" data-dismiss="modal" type="button" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{BASE_URL}}/servico/add" method="post">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="form-label" id="nameServ">Nome do Serviço</label>
+                            <input class="form-control" name="nameServ" type="text">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label" id="valServ">Valor do Serviço</label>
+                            <input class="form-control" name="valServ" type="text">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Situação</label>
+                            <select name="situacao" class="form-control">
+                                <option value="0">{{situation[0]}}</option>
+                                <option value="1">{{situation[1]}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal" type="button">Cancelar</button>
+                    <button class="btn btn-success" type="submit" onclick="aprovar()">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

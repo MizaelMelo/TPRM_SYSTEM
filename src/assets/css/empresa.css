@@ -1,0 +1,37 @@
+.box-empresa {
+    display: inline-block;
+    text-align: center;
+    text-align: -webkit-center;
+} 
+table a,
+table a:hover {
+
+    text-decoration: none;
+    padding-right: 10px;
+}
+
+table a:nth-of-type(1) {
+	color: 5FB68C;
+}
+table a:nth-of-type(2){
+    color: rgb(110, 107, 107);
+}
+
+#nameEmp,
+#saldoEmp,
+#nameServ,
+#valServ,
+#situServ {
+    float: left;
+}
+
+.page-item.active .page-link {
+    background: #5FB68C !important;
+    border-color: #5FB68C !important;
+    color: #fff !important;
+}
+.page-link {
+    color: #5FB68C !important;
+
+}
+

@@ -1,0 +1,140 @@
+{% extends "template.html" %}
+
+{% block content %}
+<div class="content box-empresa col-sm-12">
+    <div class="col-sm-12 mt-4">
+        <h4><i class="fa fa-angle-right"></i> <small> Cadastro de</small><strong class="text-uppercase"> empresas</strong></h4>
+    </div>
+    <div class="col-md-10">
+        <div class="panel-heading">
+            <div class="page-heading text-left mb-2"> <i class="glyphicon glyphicon-plus"></i>
+                <button class="btn btn-success" data-target="#adicionarEmp" data-toggle="modal" type="button">Incluir</button>
+            </div>
+        </div> <!-- /panel-heading -->
+        <div class="panel-body">
+            <div class="remove-messages"></div>
+                <table class="table table-bordered" method="POST">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nome da Empresa</th>
+                            <th>Saldo devedor</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for empresas in emp %}
+                        <tr>
+                            <td>{{empresas.id}}</td>
+                            <td>{{empresas.name}}</td>
+                            <td>{{empresas.saldo}}</td>
+                            <td width="10"><a href="#" data-toggle="modal" data-target="#editaEmp{{empresas.id}}">Editar</a><a href="" data-toggle="modal" data-target="#excluirEmp{{empresas.id}}">Excluir</a></td>
+                        </tr>
+                        <!-- /Modal de edicao -->
+                        <div class="modal fade" id="editaEmp{{empresas.id}}" role="dialog" aria-hidden="true" aria-labelledby="editaEmpLabel" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editaEmpLabel">Editar</h5>
+                                        <button class="close" data-dismiss="modal" type="button" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form action="{{BASE_URL}}/empresa/edit/{{empresas.id}}" method="post">
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label class="form-label" id="nameEmp">Nome da Empresa</label>
+                                                    <input class="form-control" value="{{empresas.name}}" name="nameEmp" type="text">
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label class="form-label" id="saldoEmp">Saldo</label>
+                                                    <input class="form-control" value="{{empresas.saldo}}" name="saldoEmp" type="text" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" data-dismiss="modal" type="button">Cancelar</button>
+                                            <button class="btn btn-success" type="submit" onclick="aprovar()">Salvar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Modal de edicao -->
+                        <!-- Modal de exclusão de empresa -->
+                        <div class="modal fade" id="excluirEmp{{empresas.id}}" role="dialog" aria-hidden="true" aria-labelledby="excluiTranLabel" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <form action="{{BASE_URL}}/empresa/delete/{{empresas.id}}">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="excluiTranLabel">Deseja excluir esta empresa?</h5>
+                                            <button class="close" data-dismiss="modal" type="button" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" data-dismiss="modal" type="button">Cancelar</button>
+                                            <button class="btn btn-success" type="submit">Excluir</button>
+                                        </div>
+                                    </div>
+                                </form>	
+                            </div>
+                        </div>
+                        <!-- /Modal de Inclusão de empresa -->
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <!-- Paginação -->
+                {% if paginas > 1 %}
+                <div class="col-sm-12">				
+                    <nav aria-label="...">
+                        <ul class="pagination">
+                            {% for key, btn in btnPag %}
+                                {% if key == 99999999999 %}
+                                    <li class="page-item active">
+                                        <a class="page-link" href="/empresa?p={{btn}}">{{btn}} <span class="sr-only">(current)</span></a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="/empresa?p={{btn}}">{{btn}}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+                <!-- Paginação -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Modal de adicionar -->
+<div class="modal fade" id="adicionarEmp" role="dialog" aria-hidden="true" aria-labelledby="editaEmpLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editaEmpLabel">Adicionar</h5>
+                <button class="close" data-dismiss="modal" type="button" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{BASE_URL}}/empresa/add" method="post">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="form-label" id="nameEmp">Nome da Empresa</label>
+                            <input class="form-control" name="nameEmp" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal" type="button">Cancelar</button>
+                    <button class="btn btn-success" type="submit" onclick="aprovar()">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

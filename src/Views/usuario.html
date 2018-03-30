@@ -1,0 +1,228 @@
+{% extends "template.html" %}
+
+{% block content %}
+<div class="content box-empresa col-sm-12">
+    <div class="col-sm-12 mt-4">
+        <h4><i class="fa fa-angle-right"></i> <small> Cadastro de</small><strong class="text-uppercase"> usuário</strong></h4>
+    </div>
+    <div class="col-md-10">
+        <div class="panel-heading">
+            <div class="page-heading text-left mb-2"> <i class="glyphicon glyphicon-plus"></i>
+                <button class="btn btn-success" data-target="#adicionarEmp" data-toggle="modal" type="button">Incluir</button>
+            </div>
+        </div> <!-- /panel-heading -->
+        <div class="panel-body">
+            <div class="remove-messages"></div>
+                <table class="table table-bordered" method="POST">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Situação</th>
+                            <th>Grupo</th>
+                            <th>Empresa</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for empresas in emp %}
+                        <tr>
+                            <td>{{empresas.id}}</td>
+                            <td>{{empresas.name}}</td>
+                            <td>{{empresas.email}}</td>
+                            <td>
+                                {% for situa in situation if situa.id == empresas.situation %}
+                                        {{ situa.name }}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for group in grupo if group.id == empresas.group_id %}
+                                        {{ group.name }}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for comp in company if comp.id == empresas.company_id %}
+                                        {{ comp.name }}
+                                {% endfor %}
+                            </td>
+                            <td width="10"><a href="#" data-toggle="modal" data-target="#editUser{{empresas.id}}">Editar</a><a href="" data-toggle="modal" data-target="#excluirUser{{empresas.id}}">Excluir</a></td>
+                        </tr>
+                        <!-- /Modal de adicionar -->
+                        <div class="modal fade" id="editUser{{empresas.id}}" role="dialog" aria-hidden="true" aria-labelledby="editaEmpLabel" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editaEmpLabel">Adicionar</h5>
+                                        <button class="close" data-dismiss="modal" type="button" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form action="{{BASE_URL}}/usuario/edit/{{empresas.id}}" method="post">
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label class="form-label" id="nameEmp">Nome</label>
+                                                    <input class="form-control" value="{{empresas.name}}" name="name" type="text" required>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label class="form-label" id="nameEmp">Email</label>
+                                                    <input class="form-control" value="{{empresas.email}}" name="email" type="email" disabled>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" id="nameEmp">Situação</label>
+                                                    <select class="form-control" name="situacao">
+                                                        {% for situa in situation %}
+                                                            <option 
+                                                                {% if situa.id == empresas.situation %} 
+                                                                    value="{{situa.id}}" selected="selected" 
+                                                                {% else %}
+                                                                    value="{{situa.id}}"
+                                                            {% endif %}>{{situa.name}}</option>
+                                                        {% endfor %}
+                                                </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" id="nameEmp">Grupo</label>
+                                                    <select class="form-control" name="grupo">
+                                                        {% for group in grupo %}
+                                                            <option 
+                                                                {% if group.id == empresas.group_id %} 
+                                                                    value="{{group.id}}" selected="selected" 
+                                                                {% else %}
+                                                                    value="{{group.id}}"
+                                                            {% endif %}>{{group.name}}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label class="form-label" id="nameEmp">Empresa</label>
+                                                    <select class="form-control" name="empresa">
+                                                        {% for comp in company %}
+                                                            <option 
+                                                                {% if comp.id == empresas.company_id %} 
+                                                                    value="{{comp.id}}" selected="selected" 
+                                                                {% else %}
+                                                                    value="{{comp.id}}"
+                                                            {% endif %}>{{comp.name}}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label class="form-label" id="nameEmp">Alterar senha</label>
+                                                    <input class="form-control" name="senha" type="password">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" data-dismiss="modal" type="button">Cancelar</button>
+                                            <button class="btn btn-success" type="submit">Salvar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Modal de exclusão -->
+                        <div class="modal fade" id="excluirUser{{empresas.id}}" role="dialog" aria-hidden="true" aria-labelledby="excluiTranLabel" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <form action="{{BASE_URL}}/usuario/delete/{{empresas.id}}">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="excluiTranLabel">Deseja excluir este usuário?</h5>
+                                            <button class="close" data-dismiss="modal" type="button" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" data-dismiss="modal" type="button">Cancelar</button>
+                                            <button class="btn btn-success" type="submit">Excluir</button>
+                                        </div>
+                                    </div>
+                                </form>	
+                            </div>
+                        </div>
+                        <!-- /Modal de Inclusão -->
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <!-- Paginação -->
+                {% if paginas > 1 %}
+                <div class="col-sm-12">				
+                    <nav aria-label="...">
+                        <ul class="pagination">
+                            {% for key, btn in btnPag %}
+                                {% if key == 99999999999 %}
+                                    <li class="page-item active">
+                                        <a class="page-link" href="/usuario?p={{btn}}">{{btn}} <span class="sr-only">(current)</span></a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="/usuario?p={{btn}}">{{btn}}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+                <!-- Paginação -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Modal de adicionar -->
+<div class="modal fade" id="adicionarEmp" role="dialog" aria-hidden="true" aria-labelledby="editaEmpLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editaEmpLabel">Adicionar</h5>
+                <button class="close" data-dismiss="modal" type="button" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{BASE_URL}}/usuario/add" method="post">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="form-label" id="nameEmp">Nome</label>
+                            <input class="form-control" name="name" type="text" required>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label" id="nameEmp">Email</label>
+                            <input class="form-control" name="email" type="email" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" id="nameEmp">Situação</label>
+                            <select name="situacao" class="form-control">
+                                {% for situa in situation %}
+                                    <option value="{{situa.id}}">{{situa.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" id="nameEmp">Grupo</label>
+                            <select name="grupo" class="form-control">
+                                {% for group in grupo %}
+                                    <option value="{{group.id}}">{{group.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Empresa</label>
+                            <select name="empresa" class="form-control">
+                                {% for comp in company %}
+                                    <option value="{{comp.id}}">{{comp.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal" type="button">Cancelar</button>
+                    <button class="btn btn-success" type="submit">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,187 @@
+{% extends "template.html" %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		<section class="content col-sm-12">
+			<div class="col-sm-12 mt-4">
+				<div class="panel panel-default">
+					<div class="action">
+						{% if btn_incluir == true %}
+							<button class="btn btn-success" data-toggle="modal" data-target="#incluiTran" type="button">Incluir</button>
+						{% endif %}
+					</div>
+					<div class="panel-body topo">
+						<div class="pull-right">
+							<div class="btn-group">
+								<button class="btn btn-success btn-filter" data-target="Aprovado" type="button">Aprovado</button>
+								<button class="btn btn-warning btn-filter" data-target="Pendente" type="button">Pendente</button>
+								<button class="btn btn-danger btn-filter" data-target="Reprovado" type="button">Reprovado</button>
+								<button class="btn btn-default btn-filter" data-target="all" type="button">Todos</button>
+							</div>
+						</div>
+						<div class="table-container">
+							<table class="table table-filter">
+								<tbody id="dados">
+									<td colspan="5">
+										<div id="circleG">
+											<div class="circleG" id="circleG_1"></div>
+											<div class="circleG" id="circleG_2"></div>
+											<div class="circleG" id="circleG_3"></div>
+										</div>
+									</td>	
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<!-- Paginação -->
+				<!-- <div class="col-sm-12"></div>				
+				<nav aria-label="...">
+					<ul class="pagination">
+						<li class="page-item disabled">
+							<a class="page-link" href="#" tabindex="-1">Previous</a>
+						</li>
+						<li class="page-item">
+							<a class="page-link" href="#">1</a>
+						</li>
+						<li class="page-item active">
+							<a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+						</li>
+						<li class="page-item">
+							<a class="page-link" href="#">3</a>
+						</li>
+						<li class="page-item">
+							<a class="page-link" href="#">Next</a>
+						</li>
+					</ul>
+				</nav> -->
+				<!-- Paginação -->
+			</div>
+		</section>
+	</div>
+</div>
+<!-- Modal de Inclusão de Transação -->
+<div class="modal fade" id="incluiTran" role="dialog" aria-hidden="true" aria-labelledby="incluiTranLabel" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="incluiTranLabel">Incluir Movimentação</h5>
+				<button class="close" data-dismiss="modal" type="button" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<form action="{{BASE_URL}}/home/add" method="post">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-12">
+							<label for="" class="form-label">Contratante</label>
+							<input type="text" name="contratante" value="{{company}}" disabled class="form-control">
+						</div>
+						<div class="col-md-12">
+							<label class="form-label" for>Contratada</label>
+							<input class="form-control" required name="contratada" type="text">
+						</div>
+						<div class="col-md-8">
+							<label class="form-label">Tipo Serviço</label>
+							<select class="form-control" name="tpServico" id="">
+								{% for value in services %}
+									<option value="{{value.id}}">{{value.description}}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="col-md-4">
+							<label class="form-label">Valor</label>
+							<input class="form-control" required name="value" id="value" type="text">
+						</div>
+						<div class="col-md-12">
+							<label class="col-form-label" for="message-text">Descrição do serviço</label>
+							<textarea class="form-control" required name="descricao" id="message-text"></textarea>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" data-dismiss="modal" type="button">Fechar</button>
+					<button class="btn btn-success" type="submit">Salvar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<!-- /Modal de Inclusão de Transação -->
+<!-- Modal de exclusão de Transação -->
+<div class="modal fade" id="excluiTran" role="dialog" aria-hidden="true" aria-labelledby="excluiTranLabel" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<form action="">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="excluiTranLabel">Deseja excluir esta transação?</h5>
+					<button class="close" data-dismiss="modal" type="button" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" data-dismiss="modal" type="button">Cancelar</button>
+					<button class="btn btn-success" id="btn-excluir" type="submit">Excluir</button>
+				</div>
+			</div>
+		</form>	
+	</div>
+</div>
+<!-- /Modal de Inclusão de Transação -->
+<!-- Modal de analise de Transação -->
+<div class="modal fade" id="analiseTran" role="dialog" aria-hidden="true" aria-labelledby="analiseTranLabel" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="analiseTranLabel">Análise de transação</h5>
+				<button class="close" data-dismiss="modal" type="button" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<form id="edit-form" method="post">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-12">
+							<label class="form-label" for>Contratante</label>
+							<input class="form-control" id="edit_cotante" name="contratante" type="text" readonly>
+						</div>
+						<div class="col-md-12">
+							<label class="form-label" for>Contratada</label>
+							<input class="form-control" id="edit_contada" name="contratada" type="text" readonly>
+						</div>
+						<div class="col-md-12">
+							<label class="form-label">Tipo Serviço</label>
+							<input class="form-control" id="edit_service" name="tpServico" type="text" readonly>
+						</div>
+						<div class="col-md-6">
+							<label class="form-label">Valor</label>
+							<input class="form-control" id="edit_value" name="value" type="text" readonly>
+						</div>
+						<div class="col-md-6">
+							<label class="form-label">Preço Tabela</label>
+							<input class="form-control" id="edit_value_tabela" name="value" type="text" readonly>
+						</div>
+						<div class="col-md-12">
+							<label class="col-form-label" for="message-text">Descrição do serviço</label>
+							<textarea class="form-control" id="edit_desc" name="descricao" readonly></textarea>
+						</div>
+						<input class="form-control" name="moviments" id="moviments" type="hidden">
+						<input class="form-control" name="company_id" id="company_id" type="hidden">
+						<div class="col-md-12">
+							<label class="form-label">Informação sobre a análise</label>
+							<input class="form-control" name="descricao_analise" required type="text">
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" data-dismiss="modal" type="button">Cancelar</button>
+					<button class="btn btn-danger" onclick="reprovar()" type="submit">Reprovar</button>
+					<button class="btn btn-success" onclick="aprovar()" type="submit">Aprovar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<!-- /Modal de analise de Transação -->
+{% endblock %}
