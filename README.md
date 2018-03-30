@@ -33,6 +33,7 @@ Após isso, execute o comando descrito abaixo para popular as tabelas:
 ````bash
 $ vendor\bin\phinx seed:run
 ````
+> Para melhor entendimento do processo de modalagem do banco, verifique a url http://ondras.zarovi.cz/sql/demo/?keyword=bernhoeft .
 
 No arquivo _config.php_ a constante __BASE_URL__ define a url padrão do servidor. Já a constante __PASS_USER__ define qual a senha padrão dos novos usuários cadastrados no sistema.
 ````php
