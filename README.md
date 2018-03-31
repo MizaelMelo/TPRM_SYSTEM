@@ -24,6 +24,7 @@ $ composer install
         port: 3306
         charset: utf8
  ````
+>Obs: _Este sistema fora projetado para banco de dados MySql afim de facilitar a instalação._
 
 Em seu terminal, vá para a raiz do projeto e execute o comando abaixo para criar as tabelas no banco de dados.
 ````bash
